@@ -1,0 +1,33 @@
+DeclareOperation("kGortestdegree",[IsList]);
+
+InstallMethod(kGortestdegree, "for a representation of a quiver", [IsList],0,function(LIST)
+
+local A,g,injA,temp,temp2,temp3,uu,i;
+
+A:=LIST[1];
+g:=GorensteinDimensionOfAlgebra(A,30);
+injA:=IndecInjectiveModules(A);CoRegA:=DirectSumOfQPAModules(injA);
+temp:=[];for i in [0..g] do Append(temp,[Source(ProjectiveCover(NthSyzygy(CoRegA,i)))]);od;
+temp2:=[];for i in [0..g] do Append(temp2,[i-InjDimensionOfModule(Source(ProjectiveCover(NthSyzygy(CoRegA,i))),30)]);od;
+temp3:=Filtered([0..g],x->temp2[x+1]<0);
+Append(temp3,[g]);
+uu:=Minimum(temp3);
+return(uu);
+end);
+
+
+DeclareOperation("IsAuslanderGorenstein",[IsList]);
+
+InstallMethod(IsAuslanderGorenstein, "for a representation of a quiver", [IsList],0,function(LIST)
+
+local A,g,gg;
+
+A:=LIST[1];
+g:=GorensteinDimensionOfAlgebra(A,30);
+gg:=kGortestdegree([A]);
+return(g-gg);
+end); 
+
+A:=NakayamaAlgebra([3,2,1],GF(3));IsAuslanderGorenstein([A]);
+
+# It will return 0 if the algebra is AuslanderGorenstein and something non-zero if it is not. The algebra is assumed to be Iwanaga-Gorenstein, that is injdim A < \infty. You can check that with GorensteinDimensionOfAlgebra(A,33); if injdim A <=33 for example. 
