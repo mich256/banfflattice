@@ -28,12 +28,14 @@ def CoxeterPerm(A):
 	return Permutation(bruhatDecomp(A)).inverse()
 
 
-posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
+L=posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
 W=L.lequal_matrix().transpose()
 P=CoxeterPerm(W)
 display(P)
-plot(L) 
-Here how to get all Coxeter permutations of all linear extensions of a given poset:                                                                                                                                                         L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
+plot(L)
+
+# Here how to get all Coxeter permutations of all linear extensions of a given poset:
+L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)                                                                                                                                                       L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
 O=L.linear_extensions()
 OO=[L.linear_extension(x).to_poset() for x in O]
 OO2=[CoxeterPerm(x.lequal_matrix().transpose()) for x in OO]
