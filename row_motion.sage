@@ -29,5 +29,9 @@ def rowmotion(L):
 		Row[z] = L.meet(kd)
 	return Row
 
-L = posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
-rowmotion(L)
+def rowmotionToPerm(L):
+	Row = rowmotion(L)
+	return [Row[i] for i in sorted(Row.keys())]
+
+# L = posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
+# rowmotion(L)
