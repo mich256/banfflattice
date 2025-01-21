@@ -1,23 +1,23 @@
 def kappa(L):
 	Jirr = L.join_irreducibles()
-	k = {}
-	arblin = L.linear_extension()
+	Mirr = L.meet_irreducibles()
+	k = {j:[] for j in Jirr}
 	for j in Jirr:
-		for z in reversed(arblin):
-			if L.meet(z,j) == L.lower_covers(j)[0]:
-				k[j] = z
-				break
+		jstar = L.lower_covers(j)[0]
+		for m in Mirr:
+			if L.meet(m,j) == jstar:
+				k[j].append(m)
 	return k
 
 def kappaInverse(L):
 	Mirr = L.meet_irreducibles()
-	ki = {}
-	arblin = L.linear_extension()
+	Jirr = L.join_irreducibles()
+	ki = {m:[] for m in Mirr}
 	for m in Mirr:
-		for z in arblin:
-			if L.join(z,m) == L.upper_covers(j)[0]:
-				ki[m] = z
-				break
+		mstar = L.upper_covers(j)[0]
+		for j in Jirr:
+			if L.join(j,m) == mstar:
+				ki[m].append(j)
 	return ki
 
 def rowmotion(L):
@@ -35,3 +35,14 @@ def rowmotionToPerm(L):
 
 # L = posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
 # rowmotion(L)
+
+L=CoxeterGroup(['A',2]).weak_lattice()
+lower=dict([(l,Set(L.canonical_joinands(l))) for l in L])
+J=L.join_irreducibles()
+M=L.meet_irreducibles()
+meet_to_join=dict([(m,L.meet([l for l in J if L.le(l,L.upper_covers(m)[0]) and not(L.le(l,m))])) for m in M])
+upper=dict([(Set([meet_to_join[i] for i in L.canonical_meetands(l)]),l) for l in L])
+def semi_dist_row(l):
+   return upper[lower[l]]
+from sage.combinat.cyclic_sieving_phenomenon import *
+list(map(len,orbit_decomposition(L,semi_dist_row)))
