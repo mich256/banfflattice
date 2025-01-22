@@ -1,0 +1,22 @@
+n=6
+posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
+modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular()]
+for M in modularlattices:
+	M = M.relabel().relabel(lambda n: n+1)
+	O=M.linear_extensions()
+	OO=[M.linear_extension(x).to_poset() for x in O]
+	all([ccv_coxeter(x) and mp_to_jp(x) for x in OO])
+
+L=posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
+W=L.lequal_matrix().transpose()
+P=CoxeterPerm(W)
+display(P)
+plot(L)
+
+Here how to get all Coxeter permutations of all linear extensions of a given poset:
+L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)                                                                                                                                                       L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
+O=L.linear_extensions()
+OO=[L.linear_extension(x).to_poset() for x in O]
+OO2=[CoxeterPerm(x.lequal_matrix().transpose()) for x in OO]
+display(OO2)
+plot(L)
