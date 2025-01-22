@@ -39,8 +39,21 @@ def is_sym(f):
 		kk = t(tuple(reversed(k)),len(k))
 		try:
 			if d[kk] != d[k]:
+				print(k)
 				return False
 		except KeyError:
+			print(k)
+			return False
+	return True
+
+def ccv_coxeter(P):
+	w = CoxeterPerm(P.coxeter_transformation())
+	for i in P:
+		if len(P.lower_covers(i)) != len(P.upper_covers(w(i))):
+			print(i)
+			return False
+		if  len(P.lower_covers(w(i))) != len(P.upper_covers(i)):
+			print(i)
 			return False
 	return True
 
