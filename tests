@@ -1,4 +1,4 @@
-n=10
+n=6
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
 modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular() and not LatticePoset(p).is_distributive()]
 for M in modularlattices:
@@ -6,6 +6,15 @@ for M in modularlattices:
 	O=M.linear_extensions()
 	OO=[M.linear_extension(x).to_poset() for x in O]
 	all([ccv_coxeter(x) and mp_to_jp(x) for x in OO])
+
+n=9
+posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
+lattices = [LatticePoset(p) for p in posets if p.is_lattice() and not LatticePoset(p).is_distributive()]
+for M in lattices:
+	M = M.relabel().relabel(lambda n: n+1)
+	O=M.linear_extensions()
+	OO=[M.linear_extension(x).to_poset() for x in O]
+	all([mp_to_jp(x) for x in OO])
 
 L=posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
 W=L.lequal_matrix().transpose()
@@ -20,3 +29,6 @@ OO=[L.linear_extension(x).to_poset() for x in O]
 OO2=[CoxeterPerm(x.lequal_matrix().transpose()) for x in OO]
 display(OO2)
 plot(L)
+
+posets = [p for p in Posets(n-2)]
+dissectiveposets = [p.with_bounds() for p in posets if LatticePoset(p.completion_by_cuts()).is_distributive() and not p.is_lattice()]
