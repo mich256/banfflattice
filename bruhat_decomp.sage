@@ -29,21 +29,23 @@ def CoxeterPerm(A):
 
 def ccv(P):
 	R.<q,t> = QQ[]
-	return sum([q^(len(lower_covers(i)))*t^(len(upper_covers(i))) for i in P])
+	return sum([q^(len(P.lower_covers(i)))*t^(len(P.upper_covers(i))) for i in P])
 
 def is_sym(f):
-	d = f.monomial_coefficients()
-	for key,item in d:
-		kk = (k[0],k[1])
-		if d[kk] != item:
+	d = f.dict()
+	keys = d.keys()
+	for k in keys:
+		t = type(k)
+		kk = t(tuple(reversed(k)),len(k))
+		try:
+			if d[kk] != d[k]:
+				return False
+		except KeyError:
 			return False
-		d.pop(k)
-		d.pop(kk)
 	return True
 
 def jp_to_mp(L):
-	L = L.relabel().relabel(lambda n: n+1)
-	w = CoxeterPerm(L)
+	w = CoxeterPerm(L.coxeter_transformation())
 	jp = L.join_primes()
 	mp = L.meet_primes()
 	return all([w(m) in jp for m in mp]) and all([w(j) in mp for j in jp])
