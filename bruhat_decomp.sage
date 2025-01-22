@@ -31,34 +31,12 @@ def ccv(P):
 	R.<q,t> = QQ[]
 	return sum([q^(len(P.lower_covers(i)))*t^(len(P.upper_covers(i))) for i in P])
 
-def is_sym(f):
-	d = f.dict()
-	keys = d.keys()
-	for k in keys:
-		t = type(k)
-		kk = t(tuple(reversed(k)),len(k))
-		try:
-			if d[kk] != d[k]:
-				print(k)
-				return False
-		except KeyError:
-			print(k)
-			return False
-	return True
-
 def ccv_coxeter(P):
-	w = CoxeterPerm(P.coxeter_transformation())
-	for i in P:
-		if len(P.lower_covers(i)) != len(P.upper_covers(w(i))):
-			print(i)
-			return False
-		if  len(P.lower_covers(w(i))) != len(P.upper_covers(i)):
-			print(i)
-			return False
-	return True
+	w = CoxeterPerm(P.lequal_matrix().transpose())
+	return all([len(P.lower_covers(w(i))) == len(P.upper_covers(i)) for i in P])
 
-def jp_to_mp(L):
-	w = CoxeterPerm(L.coxeter_transformation())
+def mp_to_jp(L):
+	w = CoxeterPerm(L.lequal_matrix().transpose())
 	jp = L.join_primes()
 	mp = L.meet_primes()
-	return all([w(m) in jp for m in mp]) and all([w(j) in mp for j in jp])
+	return all([w(m) in jp for m in mp])
