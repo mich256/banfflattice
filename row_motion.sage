@@ -25,7 +25,7 @@ def rowmotion(L):
 	k = kappa(L)
 	for z in L:
 		d = L.canonical_joinands(z)
-		kd = [k[i] for i in d]
+		kd = [k[i][0] for i in d]
 		Row[z] = L.meet(kd)
 	return Row
 

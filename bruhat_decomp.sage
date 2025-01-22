@@ -27,17 +27,23 @@ def bruhatDecomp(A):
 def CoxeterPerm(A):
 	return Permutation(bruhatDecomp(A)).inverse()
 
+def ccv(P):
+	R.<q,t> = QQ[]
+	return sum([q^(len(lower_covers(i)))*t^(len(upper_covers(i))) for i in P])
 
-# L=posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
-# W=L.lequal_matrix().transpose()
-# P=CoxeterPerm(W)
-# display(P)
-# plot(L)
+def is_sym(f):
+	d = f.monomial_coefficients()
+	for key,item in d:
+		kk = (k[0],k[1])
+		if d[kk] != item:
+			return False
+		d.pop(k)
+		d.pop(kk)
+	return True
 
-# Here how to get all Coxeter permutations of all linear extensions of a given poset:
-# L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)                                                                                                                                                       L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
-# O=L.linear_extensions()
-# OO=[L.linear_extension(x).to_poset() for x in O]
-# OO2=[CoxeterPerm(x.lequal_matrix().transpose()) for x in OO]
-# display(OO2)
-# plot(L)
+def jp_to_mp(L):
+	L = L.relabel().relabel(lambda n: n+1)
+	w = CoxeterPerm(L)
+	jp = L.join_primes()
+	mp = L.meet_primes()
+	return all([w(m) in jp for m in mp]) and all([w(j) in mp for j in jp])
