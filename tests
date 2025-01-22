@@ -1,6 +1,6 @@
-n=6
+n=10
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
-modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular()]
+modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular() and not LatticePoset(p).is_distributive()]
 for M in modularlattices:
 	M = M.relabel().relabel(lambda n: n+1)
 	O=M.linear_extensions()
