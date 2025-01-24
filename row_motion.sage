@@ -36,13 +36,34 @@ def rowmotionToPerm(L):
 # L = posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
 # rowmotion(L)
 
-L=CoxeterGroup(['A',2]).weak_lattice()
-lower=dict([(l,Set(L.canonical_joinands(l))) for l in L])
-J=L.join_irreducibles()
-M=L.meet_irreducibles()
-meet_to_join=dict([(m,L.meet([l for l in J if L.le(l,L.upper_covers(m)[0]) and not(L.le(l,m))])) for m in M])
-upper=dict([(Set([meet_to_join[i] for i in L.canonical_meetands(l)]),l) for l in L])
-def semi_dist_row(l):
-   return upper[lower[l]]
-from sage.combinat.cyclic_sieving_phenomenon import *
-list(map(len,orbit_decomposition(L,semi_dist_row)))
+# L=CoxeterGroup(['A',2]).weak_lattice()
+# lower=dict([(l,Set(L.canonical_joinands(l))) for l in L])
+# J=L.join_irreducibles()
+# M=L.meet_irreducibles()
+# meet_to_join=dict([(m,L.meet([l for l in J if L.le(l,L.upper_covers(m)[0]) and not(L.le(l,m))])) for m in M])
+# upper=dict([(Set([meet_to_join[i] for i in L.canonical_meetands(l)]),l) for l in L])
+# def semi_dist_row(l):
+#    return upper[lower[l]]
+# from sage.combinat.cyclic_sieving_phenomenon import *
+# list(map(len,orbit_decomposition(L,semi_dist_row)))
+
+# Nathan Williams contributed
+
+def pop(L,x):
+    lower=L.lower_covers(x)
+    if lower==[]:
+        return x
+    else:
+        y=lower[0]
+        for z in lower:
+            y=L.meet(y,z)
+        return y
+def row_candidates(L,x):
+    popx=pop(L,x)
+    return [i for i in L if L.meet(i,x)==popx]
+
+# chains=L.maximal_chains()
+# m=max([len(x) for x in chains])
+# spine=[i for i in chains if len(i)==m]
+
+

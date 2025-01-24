@@ -1,11 +1,10 @@
-n=6
+n=7
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
 modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular() and not LatticePoset(p).is_distributive()]
 for M in modularlattices:
 	M = M.relabel().relabel(lambda n: n+1)
-	O=M.linear_extensions()
-	OO=[M.linear_extension(x).to_poset() for x in O]
-	all([ccv_coxeter(x) and mp_to_jp(x) for x in OO])
+	plot(M)
+	print(CoxeterPerm(M.lequal_matrix().transpose()))
 
 n=9
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]

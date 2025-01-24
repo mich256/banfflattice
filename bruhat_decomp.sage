@@ -7,7 +7,7 @@ def NiSpan(A,i,j):
 		if c == 0:
 			return False
 		return True
-	B = A.delete_rows([0..(j-1)]).delete_columns([i..(n-1)])
+	B = A.delete_rows(list(range(j))).delete_columns(list(range(i,n)))
 	try:
 		B.solve_right(c)
 		return False
@@ -25,7 +25,7 @@ def bruhatDecomp(A):
 	return p
 
 def CoxeterPerm(A):
-	return Permutation(bruhatDecomp(A)).inverse()
+	return Permutation(bruhatDecomp(A)).inverse().to_cycles()
 
 def ccv(P):
 	R.<q,t> = QQ[]
@@ -51,24 +51,24 @@ def random_linear_extension(P):
         H.delete_vertex(i)
     return pi
 
-L=posets.SymmetricGroupBruhatOrderPoset(5) 
-L=L.relabel()
+# L=posets.SymmetricGroupBruhatOrderPoset(5) 
+# L=L.relabel()
 
-x=Permutation([i+1 for i in L.linear_extension()]).to_matrix()
-#print(x)
-y=x*L.lequal_matrix()*x.inverse()
-#print(x*y*x.inverse(),"\n\n")
-rowmotions=[]
-for _ in range(100):
-    o=random_linear_extension(L)
-    #display(o.plot())
-    q=Permutation([i+1 for i in o])
-    qm=q.to_matrix()
-    #print(q.to_matrix())
-    #print((qm.inverse()*y*qm).transpose())
-    p=CoxeterPerm((qm.inverse()*y.transpose()*qm))
-    pp=q.inverse()*p.inverse()*q
-    #print(o,pp,pp.cycle_tuples(),len(pp))
-    if pp not in rowmotions:
-        print(pp.cycle_tuples())
-        rowmotions+=[pp]
+# x=Permutation([i+1 for i in L.linear_extension()]).to_matrix()
+# #print(x)
+# y=x*L.lequal_matrix()*x.inverse()
+# #print(x*y*x.inverse(),"\n\n")
+# rowmotions=[]
+# for _ in range(100):
+#     o=random_linear_extension(L)
+#     #display(o.plot())
+#     q=Permutation([i+1 for i in o])
+#     qm=q.to_matrix()
+#     #print(q.to_matrix())
+#     #print((qm.inverse()*y*qm).transpose())
+#     p=CoxeterPerm((qm.inverse()*y.transpose()*qm))
+#     pp=q.inverse()*p.inverse()*q
+#     #print(o,pp,pp.cycle_tuples(),len(pp))
+#     if pp not in rowmotions:
+#         print(pp.cycle_tuples())
+#         rowmotions+=[pp]
