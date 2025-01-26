@@ -1,3 +1,21 @@
+n=9
+posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
+modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular() and not LatticePoset(p).is_distributive()]
+for M in modularlattices:
+	M = M.relabel().relabel(lambda n: n+1)
+	plot(M)
+	print(CoxeterPerm(X.lequal_matrix().transpose()))
+
+n = 11
+posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
+modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular()]
+for M in modularlattices:
+	w = Permutation(CoxeterPerm(M.lequal_matrix().transpose()))
+	if all([i < 3 for i in w.cycle_type()]):
+		plot(M)
+		print(w)
+
+
 n=7
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
 modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular() and not LatticePoset(p).is_distributive()]
