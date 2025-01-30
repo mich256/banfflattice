@@ -25,7 +25,7 @@ def bruhatDecomp(A):
 	return p
 
 def CoxeterPerm(A):
-	return Permutation(bruhatDecomp(A)).inverse().to_cycles()
+	return Permutation(bruhatDecomp(A)).inverse()
 
 def ccv(P):
 	R.<q,t> = QQ[]
