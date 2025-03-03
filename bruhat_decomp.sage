@@ -41,6 +41,11 @@ def mp_to_jp(L):
 	mp = L.meet_primes()
 	return all([w(m) in jp for m in mp])
 
+def is_indecomposable(L):
+	if len(L.subdirect_decomposition()) == 1:
+		return True
+	return False
+
 import random
 def random_linear_extension(P):
     H = P.hasse_diagram()
@@ -50,6 +55,12 @@ def random_linear_extension(P):
         pi.append(i)
         H.delete_vertex(i)
     return pi
+
+def matrix_to_permutation(P):
+	return Permutation([list(v).index(1)+1 for v in P.columns()])
+
+def PLU(A):
+	return A.LU()[0]
 
 # L=posets.SymmetricGroupBruhatOrderPoset(5) 
 # L=L.relabel()

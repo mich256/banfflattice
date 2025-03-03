@@ -1,9 +1,12 @@
-n=10
+n=11
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
-modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular() and not LatticePoset(p).is_distributive()]
-for M in modularlattices:
-	M = M.relabel().relabel(lambda n: n+1)
-	ccv_coxeter(M)
+ml = [LatticePoset(p) for p in posets if p.is_lattice()]
+cml = [p for p in ml if p.is_modular() and p.is_complemented() and is_indecomposable(p) and not p.is_distributive()]
+for M in cml:
+	M = M.relabel(lambda n: n+1)
+	M.plot()
+	CoxeterPerm(M.lequal_matrix().transpose()).cycle_tuples()
+
 
 n = 11
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
