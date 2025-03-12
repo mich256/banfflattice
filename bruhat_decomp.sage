@@ -14,7 +14,7 @@ def NiSpan(A,i,j):
 	except ValueError:
 		return True
 
-def bruhatDecomp(A):
+def CoxeterPerm(A):
 	p = []
 	n = A.ncols()
 	for i in range(n):
@@ -22,10 +22,7 @@ def bruhatDecomp(A):
 			if NiSpan(A,i,n-j-1):
 				p.append(n-j)
 				break
-	return p
-
-def CoxeterPerm(A):
-	return Permutation(bruhatDecomp(A)).inverse()
+	return Permutation(p).inverse()
 
 def ccv(P):
 	R.<q,t> = QQ[]
@@ -56,11 +53,25 @@ def random_linear_extension(P):
         H.delete_vertex(i)
     return pi
 
-def matrix_to_permutation(P):
-	return Permutation([list(v).index(1)+1 for v in P.columns()])
-
-def PLU(A):
-	return A.LU()[0]
+def bruhat_decomposition(A):
+	n = A.ncols()
+	I = matrix.identity(QQ, n)
+	U = I
+	B = A
+	V = Matrix(QQ, n, n, 0)
+	pi = Matrix(ZZ, n, n, 0)
+	for i in range(n):
+		j = max([k for k in range(n) if B[k, i] != 0])
+		pi[j, i] = 1
+		for t in range(n):
+			V[t, j] = B[t, i]
+		for k in range(i+1, n):
+			m = B[j, k]/B[j, i]
+			U[i, k] = m
+			for l in range(j-1):
+				B[l, k] = B[l, k] - m* B[l, i]
+			B[j, k] = 0
+	return V, pi, U
 
 # L=posets.SymmetricGroupBruhatOrderPoset(5) 
 # L=L.relabel()
