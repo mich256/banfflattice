@@ -1,3 +1,27 @@
+
+
+L=posets.SymmetricGroupBruhatOrderPoset(5) 
+L=L.relabel()
+
+x=Permutation([i+1 for i in L.linear_extension()]).to_matrix()
+#print(x)
+y=x*L.lequal_matrix()*x.inverse()
+#print(x*y*x.inverse(),"\n\n")
+rowmotions=[]
+for _ in range(100):
+    o=random_linear_extension(L)
+    #display(o.plot())
+    q=Permutation([i+1 for i in o])
+    qm=q.to_matrix()
+    #print(q.to_matrix())
+    #print((qm.inverse()*y*qm).transpose())
+    p=CoxeterPerm((qm.inverse()*y.transpose()*qm))
+    pp=q.inverse()*p.inverse()*q
+    #print(o,pp,pp.cycle_tuples(),len(pp))
+    if pp not in rowmotions:
+        print(pp.cycle_tuples())
+        rowmotions+=[pp]
+
 n=11
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
 ml = [LatticePoset(p) for p in posets if p.is_lattice()]
@@ -47,7 +71,7 @@ display(P)
 plot(L)
 
 Here how to get all Coxeter permutations of all linear extensions of a given poset:
-L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)                                                                                                                                                       L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
+L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
 O=L.linear_extensions()
 OO=[L.linear_extension(x).to_poset() for x in O]
 OO2=[CoxeterPerm(x.lequal_matrix().transpose()) for x in OO]

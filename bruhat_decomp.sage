@@ -1,4 +1,48 @@
-def NiSpan(A,i,j):
+def bruhat_decomposition(A):
+	n = A.ncols()
+	I = matrix.identity(QQ, n)
+	U = I
+	B = A
+	V = Matrix(QQ, n, n, 0)
+	pi = Matrix(ZZ, n, n, 0)
+	for i in range(n):
+		j = max([k for k in range(n) if B[k, i] != 0])
+		pi[j, i] = 1
+		for t in range(n):
+			V[t, j] = B[t, i]
+		for k in range(i+1, n):
+			m = B[j, k]/B[j, i]
+			U[i, k] = m
+			for l in range(j-1):
+				B[l, k] = B[l, k] - m* B[l, i]
+			B[j, k] = 0
+	return V, pi, U
+
+def bigrassmannian(n,a,b,c):
+	if a > b or b > c or a >c:
+		raise ValueError
+	return Permutation([1..a]+[(b+1)..c]+[(a+1)..b]+[(c+1)..n])
+
+def layered(n, J):
+	i = min(J)
+	r = [1..i-1]
+	while i < n:
+		if i in J:
+			k = 1
+			while i+k in J:
+				k += 1
+			r += list(reversed([i..(i+k)]))
+			i += k+1
+		else:
+			k = 1
+			while i+k not in J:
+				k += 1
+			r += [i..(i+k-1)]
+	if n-1 not in J:
+		r.append(n)
+	return Permutation(r)
+
+def not_in_span(A,i,j):
 	n = A.ncols()
 	if j == 0:
 		return True
@@ -14,12 +58,12 @@ def NiSpan(A,i,j):
 	except ValueError:
 		return True
 
-def CoxeterPerm(A):
+def coxeter_permutation(A):
 	p = []
 	n = A.ncols()
 	for i in range(n):
 		for j in range(n):
-			if NiSpan(A,i,n-j-1):
+			if not_in_span(A,i,n-j-1):
 				p.append(n-j)
 				break
 	return Permutation(p).inverse()
@@ -52,45 +96,3 @@ def random_linear_extension(P):
         pi.append(i)
         H.delete_vertex(i)
     return pi
-
-def bruhat_decomposition(A):
-	n = A.ncols()
-	I = matrix.identity(QQ, n)
-	U = I
-	B = A
-	V = Matrix(QQ, n, n, 0)
-	pi = Matrix(ZZ, n, n, 0)
-	for i in range(n):
-		j = max([k for k in range(n) if B[k, i] != 0])
-		pi[j, i] = 1
-		for t in range(n):
-			V[t, j] = B[t, i]
-		for k in range(i+1, n):
-			m = B[j, k]/B[j, i]
-			U[i, k] = m
-			for l in range(j-1):
-				B[l, k] = B[l, k] - m* B[l, i]
-			B[j, k] = 0
-	return V, pi, U
-
-# L=posets.SymmetricGroupBruhatOrderPoset(5) 
-# L=L.relabel()
-
-# x=Permutation([i+1 for i in L.linear_extension()]).to_matrix()
-# #print(x)
-# y=x*L.lequal_matrix()*x.inverse()
-# #print(x*y*x.inverse(),"\n\n")
-# rowmotions=[]
-# for _ in range(100):
-#     o=random_linear_extension(L)
-#     #display(o.plot())
-#     q=Permutation([i+1 for i in o])
-#     qm=q.to_matrix()
-#     #print(q.to_matrix())
-#     #print((qm.inverse()*y*qm).transpose())
-#     p=CoxeterPerm((qm.inverse()*y.transpose()*qm))
-#     pp=q.inverse()*p.inverse()*q
-#     #print(o,pp,pp.cycle_tuples(),len(pp))
-#     if pp not in rowmotions:
-#         print(pp.cycle_tuples())
-#         rowmotions+=[pp]
