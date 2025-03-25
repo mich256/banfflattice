@@ -36,6 +36,9 @@ def not_in_span(A,i,j):
 		B.solve_right(c)
 		return False
 	except ValueError:
+		print('red weights: ', kernel(B).basis()[0])
+		D = A.delete_rows(list(range(j+1))).delete_columns(list(range(i+1,n)))
+		print('blue weights: ', kernel(D.transpose()).basis()[0])
 		return True
 
 def coxeter_permutation(A):
