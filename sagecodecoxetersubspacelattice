@@ -1,0 +1,57 @@
+def NiSpan(A,i,j):
+    n = A.ncols()
+    if j == 0:
+        return True
+    c = A.column(i)[j:]
+    if i == 0:
+        if c == 0:
+            return False
+        return True
+    B = A.delete_rows(list(range(j))).delete_columns(list(range(i,n)))
+    try:
+        B.solve_right(c)
+        return False
+    except ValueError:
+        return True
+
+def bruhatDecomp(A):
+    p = []
+    n = A.ncols()
+    for i in range(n):
+        for j in range(n):
+            if NiSpan(A,i,n-j-1):
+                p.append(n-j)
+                break
+    return p
+
+def CoxeterPerm(A):
+    return Permutation(bruhatDecomp(A)).inverse()
+
+#L=posets.RandomLattice(9,0.7,properties=['distributive']);
+dim = 4
+FF = FiniteField(2)
+VS = VectorSpace(FF,dim)
+SS = {}
+SS[0] = set([VS.subspace([])])
+for dim in range(1,dim+1):
+    new_subspaces = set()
+    for v in VS:
+        for ss in SS[dim-1]:
+            new_ss = ss + VS.subspace([v])
+            if new_ss.dimension() == dim:
+                new_subspaces.add(new_ss)
+    SS[dim] = new_subspaces
+ground_set = reduce(lambda x,y:x.union(y),SS.values())
+L = LatticePoset((ground_set,lambda x,y: x.is_subspace(y))).relabel()
+L=L.relabel().relabel(lambda n: n + 1)
+O=L.linear_extensions()
+L.show()
+x=Permutation([i for i in L.linear_extension()]).to_matrix()#make sure your poset vertices [1..n]; RandomLattice does 0..(n-1), RandomPoset does 1..n
+y=x*L.lequal_matrix()*x.inverse()
+for o in O:
+    q=Permutation([i for i in o])
+    qm=q.to_matrix()
+    p=CoxeterPerm((qm.inverse()*y.transpose()*qm))
+    pp=q.inverse()*p.inverse()*q
+    print(o,pp,pp.fixed_points())
+plot(L,figsize=60)
