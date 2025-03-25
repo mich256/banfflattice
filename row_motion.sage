@@ -20,6 +20,16 @@ def kappaInverse(L):
 				ki[m].append(j)
 	return ki
 
+def popup(L,x):
+	upper = L.upper_covers(x)
+	if upper == []:
+		return x
+	else:
+		y = upper[0]
+		for z in upper:
+			y = L.join(y, z)
+		return y
+
 def rowmotion(L):
 	Row = {}
 	k = kappa(L)
@@ -49,7 +59,7 @@ def rowmotionToPerm(L):
 
 # Nathan Williams contributed
 
-def pop(L,x):
+def popdown(L,x):
     lower=L.lower_covers(x)
     if lower==[]:
         return x

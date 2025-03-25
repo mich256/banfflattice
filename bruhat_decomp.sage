@@ -1,23 +1,3 @@
-def bruhat_decomposition(A):
-	n = A.ncols()
-	I = matrix.identity(QQ, n)
-	U = I
-	B = A
-	V = Matrix(QQ, n, n, 0)
-	pi = Matrix(ZZ, n, n, 0)
-	for i in range(n):
-		j = max([k for k in range(n) if B[k, i] != 0])
-		pi[j, i] = 1
-		for t in range(n):
-			V[t, j] = B[t, i]
-		for k in range(i+1, n):
-			m = B[j, k]/B[j, i]
-			U[i, k] = m
-			for l in range(j-1):
-				B[l, k] = B[l, k] - m* B[l, i]
-			B[j, k] = 0
-	return V, pi, U
-
 def bigrassmannian(n,a,b,c):
 	if a > b or b > c or a >c:
 		raise ValueError
@@ -82,10 +62,11 @@ def mp_to_jp(L):
 	mp = L.meet_primes()
 	return all([w(m) in jp for m in mp])
 
-def is_indecomposable(L):
-	if len(L.subdirect_decomposition()) == 1:
-		return True
-	return False
+def product(p1,p2):
+	L = cartesian_product((p1,p2),order='product')
+	d = {i: [j for j in L if p1.covers(i[0],j[0]) and i[1]==j[1] 
+	or p2.covers(i[1],j[1]) and i[0]==j[0]] for i in L}
+	return Poset(d)
 
 import random
 def random_linear_extension(P):
