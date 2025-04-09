@@ -1,26 +1,3 @@
-import copy
-
-def bruhat_decomposition(A):
-	B = copy.deepcopy(A)
-	B = matrix(QQ, B)
-	n = B.ncols()
-	U = identity_matrix(QQ, n)
-	V = zero_matrix(QQ, n)
-	P = zero_matrix(ZZ, n)
-	for i in range(n):
-		for j in range(n):
-			if B[n-j-1,i] != 0:
-				break
-		P[n-j-1,i] = 1
-		V[:,n-j-1] = B[:,i]
-		for k in range(i+1,n):
-			m = B[n-j-1,k]/B[n-j-1,i]
-			U[i,k] = m
-			for l in range(n-j):
-				B[l,k] = B[l,k] - m * B[l,i]
-	return U,P,V
-
-
 def bigrassmannian(n,a,b,c):
 	if a > b or b > c or a >c:
 		raise ValueError
@@ -59,9 +36,9 @@ def not_in_span(A,i,j):
 		B.solve_right(c)
 		return False
 	except ValueError:
+		print('red weights: ', kernel(B).basis()[0])
 		D = A.delete_rows(list(range(j+1))).delete_columns(list(range(i+1,n)))
 		print('blue weights: ', kernel(D.transpose()).basis()[0])
-		print('red weights: ', kernel(B).basis()[0])
 		return True
 
 def coxeter_permutation(A):
@@ -72,19 +49,15 @@ def coxeter_permutation(A):
 			if not_in_span(A,i,n-j-1):
 				p.append(n-j)
 				break
-	return Permutation(p)
+	return Permutation(p).inverse()
 
-def cox_lattice(L):
-	return coxeter_permutation(L.lequal_matrix().transpose()).cycle_tuples()
+def ccv(P):
+	R.<q,t> = QQ[]
+	return sum([q^(len(P.lower_covers(i)))*t^(len(P.upper_covers(i))) for i in P])
 
-
-# def ccv(P):
-# 	R.<q,t> = QQ[]
-# 	return sum([q^(len(P.lower_covers(i)))*t^(len(P.upper_covers(i))) for i in P])
-
-# def ccv_coxeter(P):
-# 	w = CoxeterPerm(P.lequal_matrix().transpose())
-# 	return all([len(P.lower_covers(w(i))) == len(P.upper_covers(i)) for i in P])
+def ccv_coxeter(P):
+	w = CoxeterPerm(P.lequal_matrix().transpose())
+	return all([len(P.lower_covers(w(i))) == len(P.upper_covers(i)) for i in P])
 
 def mp_to_jp(L):
 	w = CoxeterPerm(L.lequal_matrix().transpose())
