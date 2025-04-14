@@ -8,6 +8,8 @@ def bruhat_decomposition(A):
 	V = zero_matrix(QQ, n)
 	P = zero_matrix(ZZ, n)
 	for i in range(n):
+		print(B)
+		print('\n')
 		for j in range(n):
 			if B[n-j-1,i] != 0:
 				break
@@ -59,9 +61,9 @@ def not_in_span(A,i,j):
 		B.solve_right(c)
 		return False
 	except ValueError:
-		D = A.delete_rows(list(range(j+1))).delete_columns(list(range(i+1,n)))
-		print('blue weights: ', kernel(D.transpose()).basis()[0])
-		print('red weights: ', kernel(B).basis()[0])
+		#D = A.delete_rows(list(range(j+1))).delete_columns(list(range(i+1,n)))
+		#print('blue weights: ', kernel(D.transpose()).basis()[0])
+		#print('red weights: ', kernel(B).basis()[0])
 		return True
 
 def coxeter_permutation(A):
@@ -71,11 +73,19 @@ def coxeter_permutation(A):
 		for j in range(n):
 			if not_in_span(A,i,n-j-1):
 				p.append(n-j)
+
 				break
 	return Permutation(p)
 
 def cox_lattice(L):
-	return coxeter_permutation(L.lequal_matrix().transpose()).cycle_tuples()
+	#return coxeter_permutation(L.lequal_matrix().transpose()).cycle_tuples()
+	w = coxeter_permutation(L.lequal_matrix().transpose())
+	r = L.rank()
+	for i in L:
+		if L.rank(i) + L.rank(w(i)) != r:
+			print(i,w(i))
+			L.plot()
+	return w.cycle_tuples()
 
 
 # def ccv(P):
