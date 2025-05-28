@@ -23,13 +23,13 @@ for _ in range(100):
 n=10
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
 ml = [LatticePoset(p) for p in posets if p.is_lattice()]
-cml = [p for p in ml if p.is_modular() and p.is_complemented() and not p.is_distributive()]
+cml = [p for p in ml if p.is_modular() and not p.is_vertically_decomposable() and not p.is_distributive()]
 for M in cml:
 	M = M.relabel(lambda n: n+1)
+	M = M.linear_extension(rank_respecting_linear_extension(M)).to_poset()
+	ccv(M)
 	M.plot()
-	M.lequal_matrix().transpose()
-	coxeter_permutation(M.lequal_matrix().transpose()).cycle_tuples()
-	break
+	#bruhat_decomposition(M.lequal_matrix().transpose())
 
 dim = 4
 FF = FiniteField(2)
