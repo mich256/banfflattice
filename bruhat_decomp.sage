@@ -4,21 +4,21 @@ def bruhat_decomposition(A):
 	B = copy.deepcopy(A)
 	B = matrix(QQ, B)
 	n = B.ncols()
-	#U = identity_matrix(QQ, n)
-	#V = zero_matrix(QQ, n)
+	U = identity_matrix(QQ, n)
+	V = zero_matrix(QQ, n)
 	P = []
 	for i in range(n):
 		for j in range(n):
 			if B[n-j-1,i] != 0:
 				break
 		P.append(n-j-1)
-		#V[:,n-j-1] = B[:,i]
+		V[:,n-j-1] = B[:,i]
 		for k in range(i+1,n):
 			m = B[n-j-1,k]/B[n-j-1,i]
-			#U[i,k] = m
+			U[i,k] = m
 			for l in range(n-j):
 				B[l,k] = B[l,k] - m * B[l,i]
-	return Permutation([i+1 for i in P]).inverse()
+	return Permutation([i+1 for i in P])
 
 
 def bigrassmannian(n,a,b,c):
@@ -59,8 +59,8 @@ def not_in_span(A,i,j):
 		B.solve_right(c)
 		return False
 	except ValueError:
-		#D = A.delete_rows(list(range(j+1))).delete_columns(list(range(i+1,n)))
-		#print('blue weights: ', kernel(D.transpose()).basis()[0])
+		D = A.delete_rows(list(range(j+1))).delete_columns(list(range(i+1,n)))
+		print('blue weights: ', kernel(D.transpose()).basis()[0])
 		#print('red weights: ', kernel(B).basis()[0])
 		return True
 
@@ -71,24 +71,18 @@ def coxeter_permutation(A):
 		for j in range(n):
 			if not_in_span(A,i,n-j-1):
 				p.append(n-j)
-
 				break
 	return Permutation(p)
 
 def cox_lattice(L):
-	#return coxeter_permutation(L.lequal_matrix().transpose()).cycle_tuples()
-	w = bruhat_decomposition(L.lequal_matrix().transpose())
-	r = L.rank()
-	for i in L:
-		if L.rank(i) + L.rank(w(i)) != r:
-			print(i,w(i))
-			L.plot()
-	return w.cycle_tuples()
-
-
-# def ccv(P):
-# 	R.<q,t> = QQ[]
-# 	return sum([q^(len(P.lower_covers(i)))*t^(len(P.upper_covers(i))) for i in P])
+	return coxeter_permutation(L.lequal_matrix().transpose()).cycle_tuples()
+	# w = bruhat_decomposition(L.lequal_matrix().transpose())
+	# r = L.rank()
+	# for i in L:
+	# 	if L.rank(i) + L.rank(w(i)) != r:
+	# 		print(i,w(i))
+	# 		L.plot()
+	# return w.cycle_tuples()
 
 def ccv(P):
 	w = bruhat_decomposition(P.lequal_matrix().transpose())
@@ -104,6 +98,11 @@ def mp_to_jp(L):
 	jp = L.join_primes()
 	mp = L.meet_primes()
 	return all([w(m) in jp for m in mp])
+
+def tracking_rank(L):
+	w = bruhat_decomposition(L.lequal_matrix().transpose())
+	return [[L.rank(i) for i in cycle] for cycle in w.cycle_tuples()]
+
 
 def product(p1,p2):
 	L = cartesian_product((p1,p2),order='product')
