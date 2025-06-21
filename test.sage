@@ -100,5 +100,16 @@ p1 = posets.ChainPoset(2)
 L = product(p1,p2)
 L.lequal_matrix().transpose()
 
+load('complemented.sage')
+load('bruhat_decomp.sage')
+for p in range(3,5):
+	for d in range(4,6):
+		L = subspace_lattice(d,p)
+		for s in range(200):
+			x = random_linear_extension(L)
+			M = L.linear_extension(x).to_poset()
+			if not ccv(M):
+				print(p,d)
+
 posets = [p for p in Posets(n-2)]
 dissectiveposets = [p.with_bounds() for p in posets if LatticePoset(p.completion_by_cuts()).is_distributive() and not p.is_lattice()]

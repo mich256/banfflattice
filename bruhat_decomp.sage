@@ -60,8 +60,9 @@ def not_in_span(A,i,j):
 		return False
 	except ValueError:
 		D = A.delete_rows(list(range(j+1))).delete_columns(list(range(i+1,n)))
+		print(i+1,',',j+1)
 		print('blue weights: ', kernel(D.transpose()).basis()[0])
-		#print('red weights: ', kernel(B).basis()[0])
+		print('red weights: ', kernel(B).basis()[0])
 		return True
 
 def coxeter_permutation(A):
@@ -74,18 +75,24 @@ def coxeter_permutation(A):
 				break
 	return Permutation(p)
 
+def leq_matrix(L):
+	n = L.cardinality()
+	m = identity_matrix(n)
+	for i in range(1,n+1):
+		for j in range(i+1,n+1):
+			if L.is_less_than(i,j):
+				m[i-1,j-1] = 1
+	return m.transpose()
+
 def cox_lattice(L):
-	return coxeter_permutation(L.lequal_matrix().transpose()).cycle_tuples()
-	# w = bruhat_decomposition(L.lequal_matrix().transpose())
-	# r = L.rank()
-	# for i in L:
-	# 	if L.rank(i) + L.rank(w(i)) != r:
-	# 		print(i,w(i))
-	# 		L.plot()
-	# return w.cycle_tuples()
+	#return coxeter_permutation(L.lequal_matrix().transpose()).cycle_tuples()
+	return bruhat_decomposition(L.leq_matrix()).cycle_tuples()
+
+def cox_inv(L):
+	return coxeter_permutation(L.incidence_algebra(QQ).moebius().to_matrix().transpose()).cycle_tuples()
 
 def ccv(P):
-	w = bruhat_decomposition(P.lequal_matrix().transpose())
+	w = bruhat_decomposition(P.leq_matrix())
 	return all([len(P.lower_covers(w(i))) == len(P.upper_covers(i)) for i in P])
 
 def rank_compl(P):
