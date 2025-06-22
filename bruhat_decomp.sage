@@ -85,29 +85,29 @@ def leq_matrix(L):
 	return m.transpose()
 
 def cox_lattice(L):
-	#return coxeter_permutation(L.lequal_matrix().transpose()).cycle_tuples()
-	return bruhat_decomposition(L.leq_matrix()).cycle_tuples()
+	#return coxeter_permutation(leq_matrix(L).transpose()).cycle_tuples()
+	return bruhat_decomposition(leq_matrix(L)).cycle_tuples()
 
 def cox_inv(L):
 	return coxeter_permutation(L.incidence_algebra(QQ).moebius().to_matrix().transpose()).cycle_tuples()
 
 def ccv(P):
-	w = bruhat_decomposition(P.leq_matrix())
+	w = bruhat_decomposition(leq_matrix(P))
 	return all([len(P.lower_covers(w(i))) == len(P.upper_covers(i)) for i in P])
 
 def rank_compl(P):
-	w = bruhat_decomposition(P.lequal_matrix().transpose())
+	w = bruhat_decomposition(leq_matrix(P).transpose())
 	n = P.rank()
 	return all(P.rank(w(i))+P.rank(i) == P.rank() for i in P)
 
 def mp_to_jp(L):
-	w = bruhat_decomposition(L.lequal_matrix().transpose())
+	w = bruhat_decomposition(leq_matrix(L).transpose())
 	jp = L.join_primes()
 	mp = L.meet_primes()
 	return all([w(m) in jp for m in mp])
 
 def tracking_rank(L):
-	w = bruhat_decomposition(L.lequal_matrix().transpose())
+	w = bruhat_decomposition(leq_matrix(L).transpose())
 	return [[L.rank(i) for i in cycle] for cycle in w.cycle_tuples()]
 
 
@@ -115,7 +115,9 @@ def product(p1,p2):
 	L = cartesian_product((p1,p2),order='product')
 	d = {i: [j for j in L if p1.covers(i[0],j[0]) and i[1]==j[1] 
 	or p2.covers(i[1],j[1]) and i[0]==j[0]] for i in L}
-	return Poset(d)
+	P = Poset(d)
+	P.relabel().relabel(lambda n: n+1)
+	return P
 
 def rank_respecting_linear_extension(P):
     """

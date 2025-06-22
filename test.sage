@@ -53,7 +53,7 @@ n = 8
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
 modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular()]
 for M in modularlattices:
-	w = Permutation(CoxeterPerm(M.lequal_matrix().transpose()))
+	w = Permutation(CoxeterPerm(lequal_matrix(M).transpose()))
 	if all([i < 3 for i in w.cycle_type()]):
 		plot(M)
 		print(w)
@@ -70,7 +70,7 @@ modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and Lattice
 for M in modularlattices:
 	M = M.relabel().relabel(lambda n: n+1)
 	plot(M)
-	print(CoxeterPerm(M.lequal_matrix().transpose()))
+	print(CoxeterPerm(lequal_matrix(M).transpose()))
 
 n=9
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
@@ -82,7 +82,7 @@ for M in lattices:
 	all([mp_to_jp(x) for x in OO])
 
 L=posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
-W=L.lequal_matrix().transpose()
+W=lequal_matrix(L).transpose()
 P=CoxeterPerm(W)
 display(P)
 plot(L)
@@ -91,14 +91,14 @@ Here how to get all Coxeter permutations of all linear extensions of a given pos
 L= posets.TamariLattice(3).relabel().relabel(lambda n: n + 1)
 O=L.linear_extensions()
 OO=[L.linear_extension(x).to_poset() for x in O]
-OO2=[CoxeterPerm(x.lequal_matrix().transpose()) for x in OO]
+OO2=[CoxeterPerm(leq_matrix(x).transpose()) for x in OO]
 display(OO2)
 plot(L)
 
 p2 = posets.DiamondPoset(5)
 p1 = posets.ChainPoset(2)
 L = product(p1,p2)
-L.lequal_matrix().transpose()
+leq_matrix(L).transpose()
 
 load('complemented.sage')
 load('bruhat_decomp.sage')
