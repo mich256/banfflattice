@@ -20,15 +20,15 @@ for _ in range(100):
         print(pp.cycle_tuples())
         rowmotions+=[pp]
 
-n=10
+n=7
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
 ml = [LatticePoset(p) for p in posets if p.is_lattice()]
 cml = [p for p in ml if p.is_modular() and not p.is_vertically_decomposable() and not p.is_distributive()]
 for M in cml:
 	M = M.relabel(lambda n: n+1)
-	M = M.linear_extension(rank_respecting_linear_extension(M)).to_poset()
-	ccv(M)
-	M.plot()
+	M.show()
+	cox_lattice(M)
+	#M = M.linear_extension(rank_respecting_linear_extension(M)).to_poset()
 	#bruhat_decomposition(M.lequal_matrix().transpose())
 
 dim = 4
@@ -69,8 +69,8 @@ posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
 modularlattices = [LatticePoset(p) for p in posets if p.is_lattice() and LatticePoset(p).is_modular() and not LatticePoset(p).is_distributive()]
 for M in modularlattices:
 	M = M.relabel().relabel(lambda n: n+1)
-	plot(M)
-	print(CoxeterPerm(lequal_matrix(M).transpose()))
+	M.show()
+	cox_lattice(M)
 
 n=9
 posets = [(p.with_bounds()).relabel() for p in Posets(n-2)]
